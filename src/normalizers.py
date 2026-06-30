@@ -3,6 +3,19 @@ import re
 from typing import Optional, List
 import phonenumbers
 
+COUNTRY_TO_REGION = {
+    "india": "IN",
+    "usa": "US",
+    "united states": "US",
+    "uk": "GB",
+    "united kingdom": "GB",
+}
+
+
+def country_to_region(country: Optional[str]) -> str:
+    if not country:
+        return "US"
+    return COUNTRY_TO_REGION.get(country.strip().lower(), "US")
 
 def normalize_phone(raw: Optional[str], default_region: str = "US") -> Optional[str]:
     if not raw:

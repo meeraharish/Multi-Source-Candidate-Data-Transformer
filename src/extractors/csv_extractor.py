@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import List
 
 from src.schema import RawExtraction, Location
-from src.normalizers import normalize_phone, normalize_name, normalize_email, split_skills
+from src.normalizers import normalize_phone, normalize_name, normalize_email, split_skills, country_to_region
 
 SOURCE_NAME = "recruiter_csv"
 
@@ -20,6 +20,7 @@ def _parse_location(raw: str) -> Location | None:
         return None
     return Location(city=city, region=region, country=country)
 
+
 def extract_csv(file_path: str) -> List[RawExtraction]:
     path = Path(file_path)
     results: List[RawExtraction] = []
@@ -28,6 +29,8 @@ def extract_csv(file_path: str) -> List[RawExtraction]:
         reader = csv.DictReader(f)
         for row in reader:
             try:
+                parsed_location = _parse_location(row.get("location", ""))
+                phone_region = country_to_region(parsed_location.country if parsed_location else None)
                 results.append(
                     RawExtraction(
                         source_name=SOURCE_NAME,
@@ -35,9 +38,9 @@ def extract_csv(file_path: str) -> List[RawExtraction]:
                         method="csv_direct_field_map",
                         full_name=normalize_name(row.get("name")),
                         emails=[e for e in [normalize_email(row.get("email"))] if e],
-                        phone=normalize_phone(row.get("phone")),
-                        location=_parse_location(row.get("location", "")),
+                        location=parsed_location,
                         skills=split_skills(row.get("skills")),
+                        phone=normalize_phone(row.get("phone"), default_region=phone_region),
                     )
                 )
             except Exception as e:
