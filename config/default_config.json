@@ -1,0 +1,11 @@
+{
+  "fields": [
+    {"path": "full_name", "rename": "full_name"},
+    {"path": "phone", "rename": "phone"},
+    {"path": "headline", "rename": "headline"},
+    {"path": "skills", "rename": "skills"}
+  ],
+  "include_confidence": true,
+  "include_provenance": true,
+  "on_missing": "null"
+}
