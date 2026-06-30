@@ -13,6 +13,33 @@ PHONE_RE = re.compile(r"(\+?\d[\d\-\(\) ]{7,}\d)")
 LINKEDIN_RE = re.compile(r"linkedin\.com/in/[\w-]+", re.IGNORECASE)
 GITHUB_RE = re.compile(r"github\.com/[\w-]+", re.IGNORECASE)
 
+
+def _read_text_from_file(file_path: str) -> str:
+    path = Path(file_path)
+    suffix = path.suffix.lower()
+
+    if suffix == ".txt":
+        return path.read_text(encoding="utf-8", errors="ignore")
+
+    if suffix == ".pdf":
+        import pdfplumber
+        text_parts = []
+        with pdfplumber.open(path) as pdf:
+            for page in pdf.pages:
+                page_text = page.extract_text()
+                if page_text:
+                    text_parts.append(page_text)
+        return "\n".join(text_parts)
+
+    if suffix == ".docx":
+        import docx
+        document = docx.Document(path)
+        paragraphs = [p.text for p in document.paragraphs if p.text.strip()]
+        return "\n".join(paragraphs)
+
+    raise ValueError(f"Unsupported resume file type: {suffix}")
+
+
 def _find_name(text: str) -> Optional[str]:
     for line in text.splitlines():
         line = line.strip()
@@ -37,9 +64,9 @@ def _find_skills_block(text: str) -> List[str]:
             return split_skills(rest)
     return []
 
+
 def extract_resume_text(file_path: str) -> List[RawExtraction]:
-    path = Path(file_path)
-    text = path.read_text(encoding="utf-8", errors="ignore")
+    text = _read_text_from_file(file_path)
 
     email_match = EMAIL_RE.search(text)
     phone_match = PHONE_RE.search(text)
