@@ -1,0 +1,23 @@
+Rohan Mehta
+Software Engineer | Bengaluru, India
+Email: rohan.mehta@gmail.com | Phone: +91 98765 11223
+LinkedIn: linkedin.com/in/rohanmehta | GitHub: github.com/rohanmehta
+
+SUMMARY
+Backend engineer with 6 years of experience building scalable web services.
+Skilled in python, javascript, and distributed systems.
+
+EXPERIENCE
+Senior Software Engineer, Flipkart
+Jan 2021 - Present
+- Built microservices handling 10M+ requests/day
+
+Software Engineer, Infosys
+Jun 2018 - Dec 2020
+- Developed REST APIs in Java and Python
+
+EDUCATION
+B.Tech in Computer Science, IIT Bombay, 2018
+
+SKILLS
+Python, JavaScript, SQL, Docker, Kubernetes

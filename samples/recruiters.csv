@@ -1,0 +1,5 @@
+candidate_id,name,email,phone,location,skills
+C001,Rohan Mehta,rohan.mehta@gmail.com,(080) 4567-1234,"Bengaluru, KA, India",Python; SQL; Java Script
+C002,Ananya Iyer,ananya.iyer@yahoo.com,98450-67890,"Chennai, TN, India",React;Node.js;python
+C003,Vikram Reddy,,9876543210,"Hyderabad, TG, India",Java;Spring Boot
+C004,Priya Nair,priya.nair@hotmail.com,not-a-phone-number,,JS;CSS;HTML

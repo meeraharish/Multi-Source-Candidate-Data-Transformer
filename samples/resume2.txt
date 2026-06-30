@@ -1,0 +1,23 @@
+Sneha Krishnan
+Data Scientist | Pune, India
+Email: sneha.krishnan@outlook.com | Phone: +91 91234 56789
+LinkedIn: linkedin.com/in/snehakrishnan | GitHub: github.com/snehakrishnan
+
+SUMMARY
+Data scientist with 4 years of experience in machine learning and analytics.
+Proficient in python, sql, and tensorflow.
+
+EXPERIENCE
+Data Scientist, Tata Consultancy Services
+Mar 2022 - Present
+- Built ML models for churn prediction
+
+Data Analyst, Wipro
+Jul 2020 - Feb 2022
+- Created dashboards and reports for leadership
+
+EDUCATION
+M.Sc. in Data Science, IISc Bangalore, 2020
+
+SKILLS
+Python, SQL, TensorFlow, Pandas, Tableau
