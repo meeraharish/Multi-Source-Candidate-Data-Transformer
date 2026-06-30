@@ -10,11 +10,11 @@ Ingests candidate data from multiple structured and unstructured sources, merges
 detect → extract → normalize → merge (conflict resolution + confidence/provenance) → project to output schema → validate
 ```
 
-- **Extract** — one extractor per source type, each emits a `RawExtraction` in a shared intermediate shape.
-- **Normalize** — phones → E.164 + type (mobile/landline), skills → canonical names via synonym map, names/emails cleaned.
-- **Merge** — records for the same person (matched by email, fallback to name) are combined. Single-value fields prefer structured sources on conflict, with the reason recorded. List fields (skills, phones) are unioned across sources, with confidence boosted when sources agree.
-- **Project to output schema** — config controls field selection, renaming, confidence/provenance toggles, and missing-value policy (`null` / `omit` / `error`).
-- **Validate** — every stage is a Pydantic model, so malformed shapes are rejected automatically.
+- **Extract** - one extractor per source type, each emits a `RawExtraction` in a shared intermediate shape.
+- **Normalize** - phones → E.164 + type (mobile/landline), skills → canonical names via synonym map, names/emails cleaned.
+- **Merge** - records for the same person (matched by email, fallback to name) are combined. Single-value fields prefer structured sources on conflict, with the reason recorded. List fields (skills, phones) are unioned across sources, with confidence boosted when sources agree.
+- **Project to output schema** - config controls field selection, renaming, confidence/provenance toggles, and missing-value policy (`null` , `omit` , `error`).
+- **Validate** - every stage is a Pydantic model, so malformed shapes are rejected automatically.
 
 ## Setup
 
