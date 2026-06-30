@@ -1,0 +1,31 @@
+[
+  {
+    "candidate_id": "C001",
+    "name": "Rohan Mehta",
+    "contact_number": "+918045671234",
+    "overall_confidence": 0.9
+  },
+  {
+    "candidate_id": "C002",
+    "name": "Ananya Iyer",
+    "contact_number": "+919845067890",
+    "overall_confidence": 0.8
+  },
+  {
+    "candidate_id": "C003",
+    "name": "Vikram Reddy",
+    "contact_number": "+919876543210",
+    "overall_confidence": 0.8
+  },
+  {
+    "candidate_id": "C004",
+    "name": "Priya Nair",
+    "overall_confidence": 0.4
+  },
+  {
+    "candidate_id": "C005",
+    "name": "Sneha Krishnan",
+    "contact_number": "+919123456789",
+    "overall_confidence": 0.7
+  }
+]
