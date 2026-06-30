@@ -60,3 +60,35 @@ def merge_skills(extractions: List[RawExtraction]):
         confidence = min(1.0, 0.5 + 0.25 * len(set(sources)))
         merged.append({"name": skill, "confidence": round(confidence, 2), "sources": list(set(sources))})
     return merged
+
+from src.schema import CanonicalProfile, FieldValue, Provenance, SkillEntry
+
+
+def build_canonical_profile(candidate_id: str, extractions: List[RawExtraction]) -> CanonicalProfile:
+    provenance_list = []
+
+    def make_field_value(field_name: str) -> FieldValue | None:
+        value, source, method, reason, confidence = pick_best_value(extractions, field_name)
+        if value is None:
+            return None
+        provenance_list.append(Provenance(field=field_name, source=source, method=method, reason=reason))
+        return FieldValue(value=value, confidence=confidence, sources=[source])
+
+    skills_merged = merge_skills(extractions)
+    all_emails = list({e for ext in extractions for e in ext.emails})
+
+    profile = CanonicalProfile(
+        candidate_id=candidate_id,
+        full_name=make_field_value("full_name"),
+        phone=make_field_value("phone"),
+        headline=make_field_value("headline"),
+        emails=all_emails,
+        skills=[SkillEntry(**s) for s in skills_merged],
+        provenance=provenance_list,
+    )
+
+    confidences = [profile.full_name.confidence if profile.full_name else 0,
+                   profile.phone.confidence if profile.phone else 0]
+    profile.overall_confidence = round(sum(confidences) / len(confidences), 2) if confidences else 0.0
+
+    return profile
