@@ -86,7 +86,8 @@ class RawExtraction(BaseModel):
 
     full_name: Optional[str] = None
     emails: List[str] = Field(default_factory=list)
-    phone: Optional[str] = None
+    
+    phone: Optional[dict] = None   # {"number": str, "type": str}
     location: Optional[Location] = None
     links: Optional[Link] = None
     headline: Optional[str] = None
@@ -106,7 +107,7 @@ class CanonicalProfile(BaseModel):
     candidate_id: str
     full_name: Optional[FieldValue] = None
     emails: List[str] = Field(default_factory=list)
-    phone: Optional[FieldValue] = None
+    phones: List[FieldValue] = Field(default_factory=list)
     location: Optional[FieldValue] = None
     links: Optional[FieldValue] = None
     headline: Optional[FieldValue] = None

@@ -41,6 +41,7 @@ def extract_csv(file_path: str) -> List[RawExtraction]:
                         location=parsed_location,
                         skills=split_skills(row.get("skills")),
                         phone=normalize_phone(row.get("phone"), default_region=phone_region),
+                        
                     )
                 )
             except Exception as e:

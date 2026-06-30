@@ -17,14 +17,26 @@ def country_to_region(country: Optional[str]) -> str:
         return "US"
     return COUNTRY_TO_REGION.get(country.strip().lower(), "US")
 
-def normalize_phone(raw: Optional[str], default_region: str = "US") -> Optional[str]:
+PHONE_TYPE_MAP = {
+    phonenumbers.PhoneNumberType.MOBILE: "mobile",
+    phonenumbers.PhoneNumberType.FIXED_LINE: "landline",
+    phonenumbers.PhoneNumberType.FIXED_LINE_OR_MOBILE: "mobile_or_landline",
+    phonenumbers.PhoneNumberType.VOIP: "voip",
+    phonenumbers.PhoneNumberType.TOLL_FREE: "toll_free",
+}
+
+
+def normalize_phone(raw: Optional[str], default_region: str = "US") -> Optional[dict]:
     if not raw:
         return None
     try:
         parsed = phonenumbers.parse(raw, default_region)
         if not phonenumbers.is_valid_number(parsed):
             return None
-        return phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.E164)
+        e164 = phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.E164)
+        num_type = phonenumbers.number_type(parsed)
+        type_label = PHONE_TYPE_MAP.get(num_type, "unknown")
+        return {"number": e164, "type": type_label}
     except phonenumbers.NumberParseException:
         return None
     

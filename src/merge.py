@@ -61,6 +61,29 @@ def merge_skills(extractions: List[RawExtraction]):
         merged.append({"name": skill, "confidence": round(confidence, 2), "sources": list(set(sources))})
     return merged
 
+def merge_phones(extractions: List[RawExtraction]):
+    phone_sources: Dict[str, List[str]] = defaultdict(list)
+    phone_types: Dict[str, str] = {}
+
+    for ext in extractions:
+        if ext.phone:
+            number = ext.phone["number"]
+            phone_sources[number].append(ext.source_name)
+            phone_types[number] = ext.phone["type"]
+
+    merged = []
+    for number, sources in phone_sources.items():
+        unique_sources = list(set(sources))
+        confidence = min(1.0, 0.5 + 0.25 * len(unique_sources))
+        if any(s == "recruiter_csv" for s in unique_sources):
+            confidence = min(1.0, confidence + 0.1)
+        merged.append(FieldValue(
+            value={"number": number, "type": phone_types[number]},
+            confidence=round(confidence, 2),
+            sources=unique_sources,
+        ))
+    return merged
+
 from src.schema import CanonicalProfile, FieldValue, Provenance, SkillEntry
 
 
@@ -75,20 +98,21 @@ def build_canonical_profile(candidate_id: str, extractions: List[RawExtraction])
         return FieldValue(value=value, confidence=confidence, sources=[source])
 
     skills_merged = merge_skills(extractions)
+    phones_merged = merge_phones(extractions)
     all_emails = list({e for ext in extractions for e in ext.emails})
 
     profile = CanonicalProfile(
         candidate_id=candidate_id,
         full_name=make_field_value("full_name"),
-        phone=make_field_value("phone"),
+        phones=phones_merged,
         headline=make_field_value("headline"),
         emails=all_emails,
         skills=[SkillEntry(**s) for s in skills_merged],
         provenance=provenance_list,
     )
 
-    confidences = [profile.full_name.confidence if profile.full_name else 0,
-                   profile.phone.confidence if profile.phone else 0]
+    confidences = [profile.full_name.confidence if profile.full_name else 0]
+    confidences += [p.confidence for p in profile.phones]
     profile.overall_confidence = round(sum(confidences) / len(confidences), 2) if confidences else 0.0
 
     return profile

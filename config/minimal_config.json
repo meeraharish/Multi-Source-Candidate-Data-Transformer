@@ -1,7 +1,8 @@
 {
   "fields": [
     {"path": "full_name", "rename": "name"},
-    {"path": "phone", "rename": "contact_number"}
+    {"path": "phones", "rename": "phone_no"}
+    
   ],
   "include_confidence": false,
   "include_provenance": false,
