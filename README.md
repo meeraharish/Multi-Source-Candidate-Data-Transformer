@@ -106,7 +106,7 @@ The Streamlit interface allows you to:
 - View merged candidate profiles
 - Compare raw extracted data before merging
 - Download the merged profiles as CSV
-- Export the merged candidate profiles as a CSV file, while JSON remains the canonical output format
+- Export the merged candidate profiles as a CSV file, while JSON remains the canonical output format 
 
 ---
 
