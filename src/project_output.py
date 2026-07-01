@@ -46,7 +46,10 @@ def _shape_value(raw_value, include_confidence: bool):
         if not raw_value:
             return None
         if hasattr(raw_value[0], "model_dump"):
-            return [item.model_dump() for item in raw_value]
+            if include_confidence:
+                return [item.model_dump() for item in raw_value]
+            else:
+                return [item.value for item in raw_value]
         return raw_value
     if hasattr(raw_value, "value"):
         if include_confidence:
