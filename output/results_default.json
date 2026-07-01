@@ -5,11 +5,72 @@
       "value": "Rohan Mehta",
       "confidence": 1.0
     },
-    "phones": null,
+    "phones": [
+      {
+        "value": {
+          "number": "+918045671234",
+          "type": "landline"
+        },
+        "confidence": 0.85,
+        "sources": [
+          "recruiter_csv"
+        ]
+      },
+      {
+        "value": {
+          "number": "+919876511223",
+          "type": "mobile"
+        },
+        "confidence": 0.75,
+        "sources": [
+          "resume_text"
+        ]
+      }
+    ],
     "headline": {
       "value": "Software Engineer",
       "confidence": 0.7
     },
+    "skills": [
+      {
+        "name": "Python",
+        "confidence": 1.0,
+        "sources": [
+          "recruiter_csv",
+          "resume_text"
+        ]
+      },
+      {
+        "name": "SQL",
+        "confidence": 1.0,
+        "sources": [
+          "recruiter_csv",
+          "resume_text"
+        ]
+      },
+      {
+        "name": "JavaScript",
+        "confidence": 1.0,
+        "sources": [
+          "recruiter_csv",
+          "resume_text"
+        ]
+      },
+      {
+        "name": "Docker",
+        "confidence": 0.75,
+        "sources": [
+          "resume_text"
+        ]
+      },
+      {
+        "name": "Kubernetes",
+        "confidence": 0.75,
+        "sources": [
+          "resume_text"
+        ]
+      }
+    ],
     "provenance": [
       {
         "field": "full_name",
@@ -24,7 +85,7 @@
         "reason": null
       }
     ],
-    "overall_confidence": 1.0
+    "overall_confidence": 0.87
   },
   {
     "candidate_id": "C002",
@@ -32,8 +93,42 @@
       "value": "Ananya Iyer",
       "confidence": 0.8
     },
-    "phones": null,
+    "phones": [
+      {
+        "value": {
+          "number": "+919845067890",
+          "type": "mobile"
+        },
+        "confidence": 0.85,
+        "sources": [
+          "recruiter_csv"
+        ]
+      }
+    ],
     "headline": null,
+    "skills": [
+      {
+        "name": "React",
+        "confidence": 0.75,
+        "sources": [
+          "recruiter_csv"
+        ]
+      },
+      {
+        "name": "Node.js",
+        "confidence": 0.75,
+        "sources": [
+          "recruiter_csv"
+        ]
+      },
+      {
+        "name": "Python",
+        "confidence": 0.75,
+        "sources": [
+          "recruiter_csv"
+        ]
+      }
+    ],
     "provenance": [
       {
         "field": "full_name",
@@ -42,7 +137,7 @@
         "reason": null
       }
     ],
-    "overall_confidence": 0.8
+    "overall_confidence": 0.82
   },
   {
     "candidate_id": "C003",
@@ -50,8 +145,35 @@
       "value": "Vikram Reddy",
       "confidence": 0.8
     },
-    "phones": null,
+    "phones": [
+      {
+        "value": {
+          "number": "+919876543210",
+          "type": "mobile"
+        },
+        "confidence": 0.85,
+        "sources": [
+          "recruiter_csv"
+        ]
+      }
+    ],
     "headline": null,
+    "skills": [
+      {
+        "name": "Java",
+        "confidence": 0.75,
+        "sources": [
+          "recruiter_csv"
+        ]
+      },
+      {
+        "name": "Spring Boot",
+        "confidence": 0.75,
+        "sources": [
+          "recruiter_csv"
+        ]
+      }
+    ],
     "provenance": [
       {
         "field": "full_name",
@@ -60,7 +182,7 @@
         "reason": null
       }
     ],
-    "overall_confidence": 0.8
+    "overall_confidence": 0.82
   },
   {
     "candidate_id": "C004",
@@ -70,6 +192,29 @@
     },
     "phones": null,
     "headline": null,
+    "skills": [
+      {
+        "name": "JavaScript",
+        "confidence": 0.75,
+        "sources": [
+          "recruiter_csv"
+        ]
+      },
+      {
+        "name": "CSS",
+        "confidence": 0.75,
+        "sources": [
+          "recruiter_csv"
+        ]
+      },
+      {
+        "name": "HTML",
+        "confidence": 0.75,
+        "sources": [
+          "recruiter_csv"
+        ]
+      }
+    ],
     "provenance": [
       {
         "field": "full_name",
@@ -79,5 +224,80 @@
       }
     ],
     "overall_confidence": 0.8
+  },
+  {
+    "candidate_id": "C005",
+    "full_name": {
+      "value": "Sneha Krishnan",
+      "confidence": 0.7
+    },
+    "phones": [
+      {
+        "value": {
+          "number": "+919123456789",
+          "type": "mobile"
+        },
+        "confidence": 0.75,
+        "sources": [
+          "resume_text"
+        ]
+      }
+    ],
+    "headline": {
+      "value": "Data Scientist",
+      "confidence": 0.7
+    },
+    "skills": [
+      {
+        "name": "Python",
+        "confidence": 0.75,
+        "sources": [
+          "resume_text"
+        ]
+      },
+      {
+        "name": "SQL",
+        "confidence": 0.75,
+        "sources": [
+          "resume_text"
+        ]
+      },
+      {
+        "name": "Tensorflow",
+        "confidence": 0.75,
+        "sources": [
+          "resume_text"
+        ]
+      },
+      {
+        "name": "Pandas",
+        "confidence": 0.75,
+        "sources": [
+          "resume_text"
+        ]
+      },
+      {
+        "name": "Tableau",
+        "confidence": 0.75,
+        "sources": [
+          "resume_text"
+        ]
+      }
+    ],
+    "provenance": [
+      {
+        "field": "full_name",
+        "source": "resume_text",
+        "method": "resume_regex_heuristic",
+        "reason": null
+      },
+      {
+        "field": "headline",
+        "source": "resume_text",
+        "method": "resume_regex_heuristic",
+        "reason": null
+      }
+    ],
+    "overall_confidence": 0.72
   }
 ]

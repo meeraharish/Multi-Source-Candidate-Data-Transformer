@@ -111,8 +111,8 @@ def build_canonical_profile(candidate_id: str, extractions: List[RawExtraction])
         provenance=provenance_list,
     )
 
+    
     confidences = [profile.full_name.confidence if profile.full_name else 0]
-    confidences += [p.confidence for p in profile.phones]
+    confidences += [p.confidence for p in profile.phones] if profile.phones else [0]
     profile.overall_confidence = round(sum(confidences) / len(confidences), 2) if confidences else 0.0
-
     return profile
