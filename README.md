@@ -1,105 +1,191 @@
-# TalentSync — Multi-Source Candidate Data Transformer
+# 💠 TalentSync – Multi-Source Candidate Data Transformer
 
-One Candidate. One Profile. Multiple Sources.
+**One Candidate. One Profile. Multiple Sources.**
 
-Ingests candidate data from multiple structured and unstructured sources, merges it into one canonical profile per candidate with confidence scoring and provenance, and outputs JSON reshaped according to a runtime config.
+TalentSync is a Python-based data transformation pipeline that combines candidate information from multiple sources such as recruiter CSVs and resumes into a single, unified candidate profile.
 
-## Pipeline
+The goal of the project is to resolve conflicting information, keep track of where each piece of data came from, assign confidence scores, and generate the final output in different JSON formats using a configurable schema.
+
+---
+
+## How the pipeline works
 
 ```
-detect → extract → normalize → merge (conflict resolution + confidence/provenance) → project to output schema → validate
+Detect
+   ↓
+Extract
+   ↓
+Normalize
+   ↓
+Merge (Conflict Resolution + Confidence + Provenance)
+   ↓
+Project to Output Schema
+   ↓
+Validate
 ```
 
-- **Extract** - one extractor per source type, each emits a `RawExtraction` in a shared intermediate shape.
-- **Normalize** - phones → E.164 + type (mobile/landline), skills → canonical names via synonym map, names/emails cleaned.
-- **Merge** - records for the same person (matched by email, fallback to name) are combined. Single-value fields prefer structured sources on conflict, with the reason recorded. List fields (skills, phones) are unioned across sources, with confidence boosted when sources agree.
-- **Project to output schema** - config controls field selection, renaming, confidence/provenance toggles, and missing-value policy (`null` , `omit` , `error`).
-- **Validate** - every stage is a Pydantic model, so malformed shapes are rejected automatically.
+### Extract
+Each supported source has its own extractor. Regardless of whether the input is a CSV, TXT, PDF, or DOCX file, every extractor converts the data into a common intermediate format (`RawExtraction`).
 
-## Setup
+### Normalize
+Before merging, extracted values are cleaned and standardized.
+
+- Phone numbers are converted to E.164 format and classified as mobile/landline.
+- Skill names are mapped to a canonical form (for example, **JS → JavaScript**).
+- Names and email addresses are cleaned to maintain consistency.
+
+### Merge
+Records belonging to the same candidate are grouped together (matched by email, with name used as a fallback).
+
+- Single-value fields (like name or headline) choose the best value when conflicts occur.
+- Multi-value fields (such as skills and phone numbers) are merged instead of replaced.
+- When multiple sources agree on the same value, the confidence score increases.
+- Every selected field records its source through provenance information.
+
+### Project Output
+The final profile can be reshaped using a JSON configuration file.
+
+The configuration controls:
+
+- Fields to include
+- Field renaming
+- Confidence/provenance visibility
+- Missing value behaviour (`null`, `omit`, or `error`)
+
+### Validation
+Every stage of the pipeline uses **Pydantic** models to ensure that the generated data follows the expected schema.
+
+---
+
+# Setup
 
 ```bash
 python3 -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate
+source venv/bin/activate      # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-## Run via CLI
+---
+
+# Running from the CLI
 
 ```bash
-python -m src.cli --csv samples/recruiters.csv --resume samples/resume1.txt --resume samples/resume2.txt --config config/default_config.json --output output/results_default.json
+python -m src.cli \
+--csv samples/recruiters.csv \
+--resume samples/resume1.txt \
+--resume samples/resume2.txt \
+--config config/default_config.json \
+--output output/results_default.json
 ```
 
-Same data, different shape — no code changes:
+To generate a different output format, simply switch the configuration file.
 
 ```bash
-python -m src.cli --csv samples/recruiters.csv --resume samples/resume1.txt --config config/minimal_config.json --output output/results_minimal.json
+python -m src.cli \
+--csv samples/recruiters.csv \
+--resume samples/resume1.txt \
+--config config/minimal_config.json \
+--output output/results_minimal.json
 ```
 
-`--resume` can repeat, and accepts `.txt`, `.pdf`, `.docx`.
+Multiple `--resume` arguments are supported (`.txt`, `.pdf`, and `.docx`).
 
-## Run the UI
+---
+
+# Running the UI
 
 ```bash
 streamlit run app.py
 ```
 
-Upload a CSV and resumes, pick a config, run. Each candidate shows as a card with a raw-source diff view for multi-source candidates, plus a CSV export button (JSON remains the canonical output format).
+The Streamlit interface allows you to:
 
-## Example output
+- Upload recruiter CSVs
+- Upload one or more resumes
+- Choose an output configuration
+- View merged candidate profiles
+- Compare raw extracted data before merging
+- Download the merged profiles as CSV
+
+---
+
+# Sample Output
 
 ```json
 {
   "candidate_id": "C001",
-  "full_name": { "value": "Rohan Mehta", "confidence": 1.0 },
+  "full_name": {
+    "value": "Rohan Mehta",
+    "confidence": 1.0
+  },
   "phones": [
-    { "value": { "number": "+918045671234", "type": "landline" }, "confidence": 0.9 },
-    { "value": { "number": "+919876511223", "type": "mobile" }, "confidence": 0.75 }
+    {
+      "value": {
+        "number": "+918045671234",
+        "type": "landline"
+      },
+      "confidence": 0.9
+    }
   ],
   "skills": [
-    { "name": "Python", "confidence": 1.0, "sources": ["recruiter_csv", "resume_text"] }
-  ],
-  "provenance": [
-    { "field": "full_name", "source": "recruiter_csv", "method": "csv_direct_field_map", "reason": null }
+    {
+      "name": "Python",
+      "confidence": 1.0,
+      "sources": [
+        "recruiter_csv",
+        "resume_text"
+      ]
+    }
   ],
   "overall_confidence": 0.9
 }
 ```
 
-## Project structure
+---
+
+# Project Structure
 
 ```
 src/
-  schema.py              # canonical Pydantic models
-  normalizers.py          # phone/email/name/skill normalization
-  extractors/
-    csv_extractor.py
-    resume_extractors.py  # .txt / .pdf / .docx
-  merge.py                 # grouping, conflict resolution, skill/phone unioning
-  project_output.py        # config-driven output projection
-  cli.py
-app.py                     # Streamlit UI
-config/                    # default_config.json, minimal_config.json
-samples/                   # sample CSV + resumes
-output/                    # generated results
+│
+├── schema.py
+├── normalizers.py
+├── merge.py
+├── project_output.py
+├── cli.py
+│
+├── extractors/
+│   ├── csv_extractor.py
+│   └── resume_extractors.py
+│
+app.py
+config/
+samples/
+output/
 ```
 
-## Testing performed (manual, no automated suite)
+---
 
-- Normalizers tested in isolation: phone formatting/validity, email cleanup, skill canonicalization, name cleanup.
-- CSV extractor: correct parsing + graceful handling of missing email, missing location, invalid phone.
-- Resume extractor: identical results across `.txt`, `.pdf`, `.docx` for the same resume.
-- Candidate grouping: same person across sources correctly merged (email match, name fallback).
-- Conflict resolution: verified on a real two-source phone conflict — structured source wins, reason recorded.
-- Skill/phone unioning: agreement across sources raises confidence; spelling variants ("JS"/"JavaScript") correctly merge as one skill.
-- Output projection: same profile, two configs (`default` vs `minimal`) produce structurally different output.
-- `on_missing: "error"`: confirmed it raises a clear error for an unpopulated required field.
-- Full pipeline: end-to-end CLI run across all sample candidates (multi-source, single-source, missing-data cases) with no errors.
+# Testing
 
-## Known limitations
+The project was tested manually across different scenarios.
 
-- `location`, `links`, `years_experience`, `experience`, `education` are schema-defined but not yet populated in the merged profile — same union pattern used for skills/phones would extend naturally.
-- Resume parsing uses positional heuristics (first line = name, etc.) — works for standard layouts, not unusual ones.
-- PDF extraction handles text-based resumes; scanned/image PDFs would need OCR.
-- `candidate_id` is assigned by run order, not a stable persisted ID.
-- No database — stateless by design for this scope; a real system would likely use a document store (e.g. MongoDB) given the nested record shape.
+- Verified phone, email, name, and skill normalization.
+- Tested CSV extraction with missing fields and invalid phone numbers.
+- Verified that TXT, PDF, and DOCX versions of the same resume produce consistent results.
+- Confirmed that candidate records from different sources are grouped correctly.
+- Tested conflict resolution between recruiter data and resume data.
+- Verified skill and phone merging across multiple sources.
+- Tested both output configurations (`default` and `minimal`).
+- Verified the behaviour of `on_missing: "error"`.
+- Ran the complete pipeline end-to-end on sample datasets.
+
+---
+
+# Current Limitations
+
+- `location`, `links`, `years_experience`, `experience`, and `education` are defined in the schema but are not yet populated in the merged profile.
+- Resume parsing relies on simple positional heuristics, so very unusual resume layouts may not be parsed correctly.
+- Image-based PDFs are not supported yet (OCR would be required).
+- Candidate IDs are generated for each run and are not persistent.
+- The project is currently stateless and does not use a database.
